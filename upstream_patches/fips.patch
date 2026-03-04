@@ -1,0 +1,73 @@
+diff --git a/modules.d/11fips/fips.sh b/modules.d/11fips/fips.sh
+index 574c32e0..8e4e79ae 100755
+--- a/modules.d/11fips/fips.sh
++++ b/modules.d/11fips/fips.sh
+@@ -79,6 +79,44 @@ mount_boot() {
+     fi
+ }
+ 
++# TODO: add proper uki/usi handling
++is_gardenlinux() {
++    . /etc/os-release
++    if [ "$ID" = "gardenlinux" ]; then
++	    return 0
++    fi
++    return 1
++}
++
++do_gl_check() {
++	if ! esp=$(lsblk --noheadings --paths --list --output NAME,PARTTYPE | grep c12a7328-f81f-11d2-ba4b-00a0c93ec93b | awk 'END {if(NR<=1){print $1; exit 0}; exit 1}'); then
++		die "Can't find ESP or more than 1 match"
++	fi
++	if ! efi=$(findmnt "$esp" -o TARGET -n); then
++		efi=$(mktemp -d)
++		# trap only if we really need to mount, if already mounted, do nothing
++		trap 'umount "$esp"; rm -rf "$efi"' EXIT
++		mount "$esp" "$efi" || die "Unable to mount $esp as ESP"
++	fi
++	KERNEL=$(uname -r)
++	k="${efi}/Default/${KERNEL}/linux"
++	h="${NEWROOT}/boot/.vmlinuz-${KERNEL}.hmac"
++	if [ ! -f "$k" ]; then
++		die "kernel file is missing..."
++	fi
++	if [ ! -f "$h" ]; then
++		die "hmac file is missing..."
++	fi
++	if sha512hmac -c "$h" -T "$k"; then
++		fips_info "gl_check OK"
++		return 0
++	else
++		warn "gl_check not OK, HMAC sum mismatch"
++		return 1
++
++	fi
++}
++
+ do_rhevh_check() {
+     KERNEL=$(uname -r)
+     kpath=${1}
+@@ -174,7 +212,9 @@ do_fips() {
+     if ! getarg rd.fips.skipkernel > /dev/null; then
+ 
+         fips_info "Checking integrity of kernel"
+-        if [ -e "/run/initramfs/live/vmlinuz0" ]; then
++        if is_gardenlinux; then
++            do_gl_check || return 1
++        elif [ -e "/run/initramfs/live/vmlinuz0" ]; then
+             do_rhevh_check /run/initramfs/live/vmlinuz0 || return 1
+         elif [ -e "/run/initramfs/live/isolinux/vmlinuz0" ]; then
+             do_rhevh_check /run/initramfs/live/isolinux/vmlinuz0 || return 1
+diff --git a/modules.d/11fips/module-setup.sh b/modules.d/11fips/module-setup.sh
+index 2c9d18fc..16d4a056 100755
+--- a/modules.d/11fips/module-setup.sh
++++ b/modules.d/11fips/module-setup.sh
+@@ -59,7 +59,7 @@ install() {
+     inst_hook pre-udev 01 "$moddir/fips-load-crypto.sh"
+     inst_script "$moddir/fips.sh" /sbin/fips.sh
+ 
+-    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr
++    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp
+ 
+     inst_multiple -o sha512hmac
+ 
