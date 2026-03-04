@@ -1,7 +1,7 @@
-diff --git a/modules.d/11fips/fips.sh b/modules.d/11fips/fips.sh
-index 574c32e0..8e4e79ae 100755
---- a/modules.d/11fips/fips.sh
-+++ b/modules.d/11fips/fips.sh
+diff --git a/modules.d/01fips/fips.sh b/modules.d/01fips/fips.sh
+index 1f23a789..581ea279 100755
+--- a/modules.d/01fips/fips.sh
++++ b/modules.d/01fips/fips.sh
 @@ -79,6 +79,44 @@ mount_boot() {
      fi
  }
@@ -58,16 +58,16 @@ index 574c32e0..8e4e79ae 100755
              do_rhevh_check /run/initramfs/live/vmlinuz0 || return 1
          elif [ -e "/run/initramfs/live/isolinux/vmlinuz0" ]; then
              do_rhevh_check /run/initramfs/live/isolinux/vmlinuz0 || return 1
-diff --git a/modules.d/11fips/module-setup.sh b/modules.d/11fips/module-setup.sh
-index 2c9d18fc..16d4a056 100755
---- a/modules.d/11fips/module-setup.sh
-+++ b/modules.d/11fips/module-setup.sh
+diff --git a/modules.d/01fips/module-setup.sh b/modules.d/01fips/module-setup.sh
+index ed4ef20b..9c40bbe6 100755
+--- a/modules.d/01fips/module-setup.sh
++++ b/modules.d/01fips/module-setup.sh
 @@ -59,7 +59,7 @@ install() {
      inst_hook pre-udev 01 "$moddir/fips-load-crypto.sh"
      inst_script "$moddir/fips.sh" /sbin/fips.sh
  
--    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr
-+    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp
+-    inst_multiple sha512hmac rmmod insmod mount uname umount grep sed cut find sort cat tail tr
++    inst_multiple sha512hmac rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp
  
-     inst_multiple -o sha512hmac
+     inst_simple /etc/system-fips
  
