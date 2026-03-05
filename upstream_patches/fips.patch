@@ -67,7 +67,7 @@ index ed4ef20b..9c40bbe6 100755
      inst_script "$moddir/fips.sh" /sbin/fips.sh
  
 -    inst_multiple sha512hmac rmmod insmod mount uname umount grep sed cut find sort cat tail tr
-+    inst_multiple sha512hmac rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp
++    inst_multiple sha512hmac rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp lsblk awk
  
      inst_simple /etc/system-fips
  
