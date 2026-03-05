@@ -67,7 +67,7 @@ index 2c9d18fc..16d4a056 100755
      inst_script "$moddir/fips.sh" /sbin/fips.sh
  
 -    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr
-+    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp
++    inst_multiple rmmod insmod mount uname umount grep sed cut find sort cat tail tr mktemp lsblk awk
  
      inst_multiple -o sha512hmac
  
