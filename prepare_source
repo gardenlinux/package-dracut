@@ -1,3 +1,2 @@
 apt_src dracut
 import_upstream_patches
-version_suffix="gl1"
