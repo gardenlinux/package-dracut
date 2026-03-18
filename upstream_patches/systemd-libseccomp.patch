@@ -1,0 +1,10 @@
+--- a/modules.d/10systemd/module-setup.sh
++++ b/modules.d/10systemd/module-setup.sh
+@@ -154,5 +154,6 @@
+     _arch=${DRACUT_ARCH:-$(uname -m)}
+     inst_libdir_file \
+         {"tls/$_arch/",tls/,"$_arch/",}"libbpf.so*" \
+-        {"tls/$_arch/",tls/,"$_arch/",}"libnss_*"
++        {"tls/$_arch/",tls/,"$_arch/",}"libnss_*" \
++        {"tls/$_arch/",tls/,"$_arch/",}"libseccomp.so*"
+ }
