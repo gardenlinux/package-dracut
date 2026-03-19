@@ -15,7 +15,7 @@
 +
 +is_usi() {
 +    . /etc/os-release
-+    if echo "$GARDENLINUX_FEATURES_FLAGS" | grep _usi > /dev/null; then
++    if echo "$GARDENLINUX_FEATURES" | grep _usi > /dev/null; then
 +	    return 0
 +    fi
 +    return 1
